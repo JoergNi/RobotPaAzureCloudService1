@@ -1,0 +1,40 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{CC5FD16D-436D-48AD-A40C-5A424C6E3E79}") = "RobotPaAzureCloudService1", "RobotPaAzureCloudService1.ccproj", "{0C163E8E-E663-4B65-89D3-D07E544C188E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebRole1", "WebRole1\WebRole1.csproj", "{E40DBC42-B94A-4C63-B240-D5D7B9DC9F98}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebRole1.Tests", "WebRole1.Tests\WebRole1.Tests.csproj", "{CA8CE2BA-ACFB-45E5-8681-2230304AED81}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TranslationRobot", "..\TranslationRobot\TranslationRobot.csproj", "{ACAE807E-5B5F-438B-85C4-C5DBE981D683}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0C163E8E-E663-4B65-89D3-D07E544C188E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0C163E8E-E663-4B65-89D3-D07E544C188E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0C163E8E-E663-4B65-89D3-D07E544C188E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0C163E8E-E663-4B65-89D3-D07E544C188E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E40DBC42-B94A-4C63-B240-D5D7B9DC9F98}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E40DBC42-B94A-4C63-B240-D5D7B9DC9F98}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E40DBC42-B94A-4C63-B240-D5D7B9DC9F98}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E40DBC42-B94A-4C63-B240-D5D7B9DC9F98}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CA8CE2BA-ACFB-45E5-8681-2230304AED81}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CA8CE2BA-ACFB-45E5-8681-2230304AED81}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CA8CE2BA-ACFB-45E5-8681-2230304AED81}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CA8CE2BA-ACFB-45E5-8681-2230304AED81}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ACAE807E-5B5F-438B-85C4-C5DBE981D683}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ACAE807E-5B5F-438B-85C4-C5DBE981D683}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ACAE807E-5B5F-438B-85C4-C5DBE981D683}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ACAE807E-5B5F-438B-85C4-C5DBE981D683}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
