@@ -4,13 +4,14 @@ using Microsoft.WindowsAzure.Storage.Table;
 using System.Web;
 using System.Web.Http;
 using TranslationRobot;
-using TranslationRobot.Entity;
 
 namespace WebRole1.Controllers
 {
 
     public class TranslateController : ApiController
     {
+        private const string TranslatoAccessKey = "TranslatorAccess";
+        private const string AddressTranslationTableKey = "AddressTranslationTable";
 
         private TranslatorAccess TranslatorAccess
         {
@@ -18,15 +19,15 @@ namespace WebRole1.Controllers
             {
                 TranslatorAccess result;
                 HttpContext context = HttpContext.Current;
-                if (context != null && context.Application != null && context.Application.Contents["TranslatorAccess"] != null)
+                if (context != null && context.Application != null && context.Application.Contents[TranslatoAccessKey] != null)
                 {
-                    result = context.Application.Contents["TranslatorAccess"] as TranslatorAccess;
+                    result = context.Application.Contents[TranslatoAccessKey] as TranslatorAccess;
 
                 }
                 else
                 {
                     result = new TranslatorAccess();
-                    if (context != null && context.Application != null) context.Application.Contents["TranslatorAccess"] = result;
+                    if (context != null && context.Application != null) context.Application.Contents[TranslatoAccessKey] = result;
                 }
                 return result;
             }
@@ -39,15 +40,15 @@ namespace WebRole1.Controllers
             {
                 CloudTable result;
                 HttpContext context = HttpContext.Current;
-                if (context != null && context.Application != null && context.Application.Contents["AddressTranslationTable"] != null)
+                if (context != null && context.Application != null && context.Application.Contents[AddressTranslationTableKey] != null)
                 {
-                    result = context.Application.Contents["AddressTranslationTable"] as CloudTable;
+                    result = context.Application.Contents[AddressTranslationTableKey] as CloudTable;
 
                 }
                 else
                 {
-                    result = GetTable("AddressTranslation");
-                    if (context != null && context.Application != null) context.Application.Contents["AddressTranslationTable"] = result;
+                    result = GetTable(TranslatedAddressEntity.TableName);
+                    if (context != null && context.Application != null) context.Application.Contents[AddressTranslationTableKey] = result;
                 }
                 return result;
             }
@@ -59,17 +60,7 @@ namespace WebRole1.Controllers
         public string Translate(string text)
         {
             string result=null;
-            var table = GetTable("AddressTranslation");
-            //var retrieveOperation = TableOperation.Retrieve<TranslatedAddressEntity>(text, TranslatedAddressEntity.DefaultPartitionKey);
-            TableQuery<TranslatedAddressEntity> query = table.CreateQuery<TranslatedAddressEntity>();
-            query.Where(TableQuery.GenerateFilterCondition("RowKey", QueryComparisons.Equal, text));
-            var queryResult = table.ExecuteQuery(query);
-            // Execute the retrieve operation.
-            //TableResult retrievedResult = table.Execute(retrieveOperation);
-           foreach (var item in queryResult)
-            {
-                result = item.Translation;
-            }
+            result = RetrieveTranslation(text);
             if (result == null)
             {
 
@@ -95,6 +86,39 @@ namespace WebRole1.Controllers
             return result;
         }
 
+        internal string RetrieveTranslation(string text)
+        {
+            string result=null;
+            var table = GetTable(TranslatedAddressEntity.TableName);
+            TableOperation retrieveOperation = TableOperation.Retrieve<TranslatedAddressEntity>(TranslatedAddressEntity.DefaultPartitionKey, text);
+
+            // Execute the retrieve operation.
+            TableResult retrievedResult = table.Execute(retrieveOperation);
+            if (retrievedResult.Result!=null)
+            {
+                result = ((TranslatedAddressEntity)retrievedResult.Result).Translation;
+            }
+
+            return result;
+        }
+
+        internal string RetrieveTranslationByQuery(string text)
+        {
+            string result = null;
+            var table = GetTable(TranslatedAddressEntity.TableName);
+            //var retrieveOperation = TableOperation.Retrieve<TranslatedAddressEntity>(text, TranslatedAddressEntity.DefaultPartitionKey);
+            TableQuery<TranslatedAddressEntity> query = table.CreateQuery<TranslatedAddressEntity>();
+            query.Where(TableQuery.GenerateFilterCondition("RowKey", QueryComparisons.Equal, text));
+            var queryResult = table.ExecuteQuery(query);
+            // Execute the retrieve operation.
+            //TableResult retrievedResult = table.Execute(retrieveOperation);
+            foreach (var item in queryResult)
+            {
+                result = item.Translation;
+            }
+            return result;
+        }
+
         public CloudTable GetTable(string tableName)
         {
             // Retrieve the storage account from the connection string.
@@ -108,7 +132,7 @@ namespace WebRole1.Controllers
             CloudTable table = tableClient.GetTableReference(tableName);
 
             // Create the table if it doesn't exist.
-            table.CreateIfNotExists();
+           // table.CreateIfNotExists(); //TODO this is broken in azure
 
             return table;
 
