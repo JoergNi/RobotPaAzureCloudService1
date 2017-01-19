@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using TranslationRobot;
 using WebRole1.Controllers;
 
 namespace WebRole1.Tests.Controllers
@@ -29,8 +30,8 @@ namespace WebRole1.Tests.Controllers
             TranslateController controller = new TranslateController();
             try
             {
-                var retrieveTranslation = controller.RetrieveTranslation("New York");
-                Assert.AreEqual("New York, NY", retrieveTranslation);
+                TranslatedAddressEntity retrieveTranslation = controller.RetrieveTranslation("New York");
+                Assert.AreEqual("New York, NY", retrieveTranslation.Translation);
             }
             catch (Exception e)
             {

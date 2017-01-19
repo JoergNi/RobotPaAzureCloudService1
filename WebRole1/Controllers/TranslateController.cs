@@ -1,9 +1,15 @@
-﻿using Microsoft.Azure;
+﻿using System.Collections.Generic;
+using Microsoft.Azure;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Table;
 using System.Web;
 using System.Web.Http;
 using TranslationRobot;
+using System;
+using System.Net;
+using System.Net.Http;
+using System.Text;
+using Newtonsoft.Json;
 
 namespace WebRole1.Controllers
 {
@@ -55,40 +61,76 @@ namespace WebRole1.Controllers
         }
 
 
-        [HttpGet]
-        [Route("api/Translate/{text}")]
-        public string Translate(string text)
+        [HttpPost ]
+        [Route("api/AddTranslation")]
+        public string AddTranslation(TranslationInput translationInput)
         {
+            translationInput.Translation = Encoding.UTF8.GetString(translationInput.EncodedTranslation);
             string result=null;
-            result = RetrieveTranslation(text);
-            if (result == null)
+            TranslatedAddressEntity translatedAddressEntity = RetrieveTranslation(translationInput.Input);
+            if (translatedAddressEntity==null)
             {
+                InsertTranslation(translationInput);
+                result = "Translation from "+translationInput.Input+" to "+translationInput.Translation + " added";
+            }
+            else
+            {
+                string oldTranslation = translatedAddressEntity.Translation;
+                translatedAddressEntity.Translation = translationInput.Translation;
+                var replaceOperation
+                    = TableOperation.Replace(translatedAddressEntity);
+                AddressTranslationTable.Execute(replaceOperation);
+                result = "Translation from " + translationInput.Input + " to " + oldTranslation + " replaced with "+translationInput.Translation;
+            }
+            
+            
+            
 
+            return result;
 
+        }
+
+        private void InsertTranslation(TranslationInput translationInput)
+        {
+           InsertTranslation(translationInput.Input,translationInput.Translation);
+        }
+
+        [HttpGet]
+        [Route("api/Translate/{input}")]
+        public string Translate(string input)
+        {
+            string result;
+            TranslatedAddressEntity translatedAddressEntity = RetrieveTranslation(input);
+            if (translatedAddressEntity != null)
+            {
+                result = translatedAddressEntity.Translation;
+            }
+            else
                 try
                 {
-                    result = LocationInfo.GetLocationInfo(text, TranslatorAccess);
+                    result = LocationInfo.GetLocationInfo(input, TranslatorAccess);
 
-                    var translatedAddressEntity = new TranslatedAddressEntity(text);
-                    translatedAddressEntity.Translation = result;
-
-                    var insertOperation = TableOperation.Insert(translatedAddressEntity);
-                    AddressTranslationTable.Execute(insertOperation);
-
+                    InsertTranslation(input, result);
                 }
                 catch (AddressNotFoundException addressNotFoundException)
                 {
                     result = addressNotFoundException.Message;
                 }
-            }
-          
+
 
             return result;
         }
 
-        internal string RetrieveTranslation(string text)
+        private void InsertTranslation(string input, string result)
         {
-            string result=null;
+            var translatedAddressEntity = new TranslatedAddressEntity(input) {Translation = result};
+            var insertOperation = TableOperation.Insert(translatedAddressEntity);
+            AddressTranslationTable.Execute(insertOperation);
+        }
+
+        internal TranslatedAddressEntity RetrieveTranslation(string text)
+        {
+            TranslatedAddressEntity result =null;
             var table = GetTable(TranslatedAddressEntity.TableName);
             TableOperation retrieveOperation = TableOperation.Retrieve<TranslatedAddressEntity>(TranslatedAddressEntity.DefaultPartitionKey, text);
 
@@ -96,7 +138,7 @@ namespace WebRole1.Controllers
             TableResult retrievedResult = table.Execute(retrieveOperation);
             if (retrievedResult.Result!=null)
             {
-                result = ((TranslatedAddressEntity)retrievedResult.Result).Translation;
+                result = (TranslatedAddressEntity)retrievedResult.Result;
             }
 
             return result;

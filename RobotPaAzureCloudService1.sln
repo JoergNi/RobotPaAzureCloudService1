@@ -9,8 +9,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebRole1", "WebRole1\WebRol
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebRole1.Tests", "WebRole1.Tests\WebRole1.Tests.csproj", "{CA8CE2BA-ACFB-45E5-8681-2230304AED81}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TranslationRobot", "..\TranslationRobot\TranslationRobot.csproj", "{ACAE807E-5B5F-438B-85C4-C5DBE981D683}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,10 +27,6 @@ Global
 		{CA8CE2BA-ACFB-45E5-8681-2230304AED81}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CA8CE2BA-ACFB-45E5-8681-2230304AED81}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CA8CE2BA-ACFB-45E5-8681-2230304AED81}.Release|Any CPU.Build.0 = Release|Any CPU
-		{ACAE807E-5B5F-438B-85C4-C5DBE981D683}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{ACAE807E-5B5F-438B-85C4-C5DBE981D683}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{ACAE807E-5B5F-438B-85C4-C5DBE981D683}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{ACAE807E-5B5F-438B-85C4-C5DBE981D683}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
