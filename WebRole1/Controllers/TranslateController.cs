@@ -6,10 +6,9 @@ using System.Web;
 using System.Web.Http;
 using TranslationRobot;
 using System;
-using System.Net;
+using System.Linq;
 using System.Net.Http;
 using System.Text;
-using Newtonsoft.Json;
 
 namespace WebRole1.Controllers
 {
@@ -66,7 +65,7 @@ namespace WebRole1.Controllers
         public string AddTranslation(TranslationInput translationInput)
         {
             translationInput.Translation = Encoding.UTF8.GetString(translationInput.EncodedTranslation);
-            string result=null;
+            string result;
             TranslatedAddressEntity translatedAddressEntity = RetrieveTranslation(translationInput.Input);
             if (translatedAddressEntity==null)
             {
@@ -93,6 +92,28 @@ namespace WebRole1.Controllers
         private void InsertTranslation(TranslationInput translationInput)
         {
            InsertTranslation(translationInput.Input,translationInput.Translation);
+        }
+
+        [HttpGet]
+        [Route("api/Translation/")]
+        public HttpResponseMessage Get()
+        {
+            CloudTable table = GetTable(TranslatedAddressEntity.TableName);
+            var query = table.CreateQuery<TranslatedAddressEntity>();
+            var queryResult = table.ExecuteQuery(query);
+            List<TranslatedAddressEntity> translatedAddressEntities = queryResult.ToList();
+          
+            IList<TranslationResponse> translationResponses = translatedAddressEntities.Select(x => new TranslationResponse()
+            {
+                Translation = x.Translation,
+                Input = x.RowKey
+            }).ToList();
+
+            HttpResponseMessage httpResponseMessage = new HttpResponseMessage()
+            {
+                Content = new JsonContent(translationResponses)
+            };
+            return httpResponseMessage;
         }
 
         [HttpGet]
@@ -180,5 +201,11 @@ namespace WebRole1.Controllers
 
         }
 
+    }
+
+    public class TranslationResponse
+    {
+        public string Translation { get; set; }
+        public string Input { get; set; }
     }
 }
