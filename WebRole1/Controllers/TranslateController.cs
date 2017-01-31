@@ -155,11 +155,17 @@ namespace WebRole1.Controllers
             var table = GetTable(TranslatedAddressEntity.TableName);
             TableOperation retrieveOperation = TableOperation.Retrieve<TranslatedAddressEntity>(TranslatedAddressEntity.DefaultPartitionKey, text);
 
+            //TODO lowercase
+
             // Execute the retrieve operation.
             TableResult retrievedResult = table.Execute(retrieveOperation);
             if (retrievedResult.Result!=null)
             {
                 result = (TranslatedAddressEntity)retrievedResult.Result;
+            }
+            else
+            {
+                result = RetrieveTranslation(text.ToUpper());
             }
 
             return result;
